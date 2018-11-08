@@ -13,6 +13,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "forever": "^0.15.3",
     "got": "^9.3.0",
+    "redbird": "^0.8.0",
     "stream-transcoder": "0.0.5",
     "vue": "^2.5.17",
     "vue-hot-reload-api": "^2.3.1",

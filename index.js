@@ -3,10 +3,20 @@ const torClient = new WebTorrent();
 const http = require('http');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
+var redbird = require('redbird');
 
 // https://support.assetbank.co.uk/hc/en-gb/articles/115005343247-Installing-Ffmpeg-on-Debian-GNU-Linux-Version-8-0-Jessie-
 
 http.createServer(webReq).listen(8888);
+
+redbird.register('example.com', 'http://localhost:8888', {
+  ssl: {
+    letsencrypt: {
+      email: 'bleh@example.com', // Domain owner/admin email
+      // production: true, // WARNING: Only use this flag when the proxy is verified to work correctly to avoid being banned!
+    }
+  }
+});
 
 var MIME = {
   html: 'text/html',
