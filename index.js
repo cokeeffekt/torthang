@@ -7,21 +7,22 @@ const Redbird = require('redbird');
 
 const redbird = new Redbird({
   port: 80,
+  letsencrypt: {
+    path: 'certs',
+  },
   ssl: {
     port: 443,
     http2: false
   },
 });
 
-// https://support.assetbank.co.uk/hc/en-gb/articles/115005343247-Installing-Ffmpeg-on-Debian-GNU-Linux-Version-8-0-Jessie-
-
 http.createServer(webReq).listen(8888);
 
-redbird.register('example.com', 'http://localhost:8888', {
+redbird.register('tor.pat.wtf', 'http://localhost:8888', {
   ssl: {
     letsencrypt: {
-      email: 'bleh@example.com', // Domain owner/admin email
-      // production: true, // WARNING: Only use this flag when the proxy is verified to work correctly to avoid being banned!
+      email: 'tor@pat.wtf', // Domain owner/admin email
+      production: true, // WARNING: Only use this flag when the proxy is verified to work correctly to avoid being banned!
     }
   }
 });
@@ -96,6 +97,7 @@ function webReq (req, res) {
           .audioCodec('libvorbis')
           .seek(options.seek)
           .format('webm')
+          .fps(20)
           .size('?x' + options.quality)
           .audioBitrate(64)
           .videoBitrate(256)
@@ -161,7 +163,7 @@ function webReq (req, res) {
           playFile.createReadStream().pipe(res);
         }
       }).catch(err => {
-        console.error(err);
+        console.error('stremfile', err);
       });
   }
 
@@ -181,7 +183,7 @@ function webReq (req, res) {
         }));
       })
       .catch(err => {
-        console.error(err);
+        console.error('load torrent', err);
       });
   }
 
@@ -207,12 +209,16 @@ function webReq (req, res) {
 
 function streamFile (hash, file) {
   return new Promise((resolve, reject) => {
-    var torrent = torClient.torrents.find(t => t.infoHash === hash);
-    if (!torrent) return reject();
+    var torrent = torClient.torrents.find(t => t.infoHash.toLowerCase() === hash.toLowerCase());
+    if (!torrent) {
+      console.log('LF: ' + hash);
+      console.log(torClient.torrents.map(t => t.infoHash));
+      return reject('torrent not found');
+    }
 
     var playFile = torrent.files.find(f => f.name.replace(/\s/igm, '-').toLowerCase() === file);
     if (!playFile) {
-      console.log(file);
+      console.log('File not found' + file);
       return Promise.reject('no file');
     }
 

@@ -201,6 +201,8 @@ export default {
 };
 
 function textOverLap (arrayOfStrings) {
+  if (arrayOfStrings.length < 3)
+    return 'nuthingtomatch';
   var shortest = arrayOfStrings.map(e => e.length).sort().shift();
   var matched = '';
   var matchLength = 1;
