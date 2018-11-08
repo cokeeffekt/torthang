@@ -3,7 +3,15 @@ const torClient = new WebTorrent();
 const http = require('http');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
-var redbird = require('redbird');
+const Redbird = require('redbird');
+
+const redbird = new Redbird({
+  port: 80,
+  ssl: {
+    port: 443,
+    http2: false
+  },
+});
 
 // https://support.assetbank.co.uk/hc/en-gb/articles/115005343247-Installing-Ffmpeg-on-Debian-GNU-Linux-Version-8-0-Jessie-
 
